@@ -71,6 +71,7 @@ impl Client {
             local_port,
             remote_port,
             auth,
+            control,
         })
     }
 
@@ -109,7 +110,7 @@ impl Client {
 
     async fn handle_connection(&self, id: Uuid) -> Result<()> {
         let mut remote_conn =
-            Delimited::new(connect_with_timeout(&self.to[..], &self.control).await?);
+            Delimited::new(connect_with_timeout(&self.to[..], self.control).await?);
         if let Some(auth) = &self.auth {
             auth.client_handshake(&mut remote_conn).await?;
         }
