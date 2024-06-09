@@ -11,7 +11,7 @@ use tracing::{info, info_span, warn, Instrument};
 use uuid::Uuid;
 
 use crate::auth::Authenticator;
-use crate::shared::{proxy, ClientMessage, Delimited, ServerMessage, CONTROL_PORT};
+use crate::shared::{proxy, ClientMessage, Delimited, ServerMessage};
 
 /// State structure for the server.
 pub struct Server {
@@ -23,6 +23,8 @@ pub struct Server {
 
     /// Concurrent map of IDs to incoming connections.
     conns: Arc<DashMap<Uuid, TcpStream>>,
+
+    control: u16
 }
 
 impl Server {
@@ -39,7 +41,7 @@ impl Server {
     /// Start the server, listening for new connections.
     pub async fn listen(self) -> Result<()> {
         let this = Arc::new(self);
-        let addr = SocketAddr::from(([0, 0, 0, 0], CONTROL_PORT));
+        let addr = SocketAddr::from(([0, 0, 0, 0], control));
         let listener = TcpListener::bind(&addr).await?;
         info!(?addr, "server listening");
 
