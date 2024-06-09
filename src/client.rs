@@ -43,8 +43,9 @@ impl Client {
         to: &str,
         port: u16,
         secret: Option<&str>,
+        control: u16,
     ) -> Result<Self> {
-        let mut stream = Delimited::new(connect_with_timeout(to, self.control).await?);
+        let mut stream = Delimited::new(connect_with_timeout(to, control).await?);
         let auth = secret.map(Authenticator::new);
         if let Some(auth) = &auth {
             auth.client_handshake(&mut stream).await?;
@@ -108,7 +109,7 @@ impl Client {
 
     async fn handle_connection(&self, id: Uuid) -> Result<()> {
         let mut remote_conn =
-            Delimited::new(connect_with_timeout(&self.to[..], self.control).await?);
+            Delimited::new(connect_with_timeout(&self.to[..], &self.control).await?);
         if let Some(auth) = &self.auth {
             auth.client_handshake(&mut remote_conn).await?;
         }
