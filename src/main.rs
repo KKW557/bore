@@ -32,7 +32,7 @@ enum Command {
         #[clap(short, long, env = "BORE_SECRET", hide_env_values = true)]
         secret: Option<String>,
 
-        #[clap(short, long, default_value_t = 0)]
+        #[clap(short, long, default_value_t = 7835)]
         control: u16,
     },
 
