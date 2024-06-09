@@ -29,20 +29,19 @@ pub struct Server {
 
 impl Server {
     /// Create a new server with a specified minimum port number.
-    pub fn new(port_range: RangeInclusive<u16>, secret: Option<&str>) -> Self {
+    pub fn new(port_range: RangeInclusive<u16>, secret: Option<&str>, control: u16) -> Self {
         assert!(!port_range.is_empty(), "must provide at least one port");
         Server {
             port_range,
             conns: Arc::new(DashMap::new()),
             auth: secret.map(Authenticator::new),
-            control: u16,
         }
     }
 
     /// Start the server, listening for new connections.
     pub async fn listen(self) -> Result<()> {
         let this = Arc::new(self);
-        let addr = SocketAddr::from(([0, 0, 0, 0], self.control));
+        let addr = SocketAddr::from(([0, 0, 0, 0], this.control));
         let listener = TcpListener::bind(&addr).await?;
         info!(?addr, "server listening");
 
