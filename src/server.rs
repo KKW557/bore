@@ -35,6 +35,7 @@ impl Server {
             port_range,
             conns: Arc::new(DashMap::new()),
             auth: secret.map(Authenticator::new),
+            control,
         }
     }
 
